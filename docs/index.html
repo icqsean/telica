@@ -1,1 +1,624 @@
 
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telica ESL - Merchandise Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            color: #1a1a2e;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-icon.blue { background: #e3f2fd; }
+        .stat-icon.green { background: #e8f5e9; }
+        .stat-icon.orange { background: #fff3e0; }
+        .stat-icon.purple { background: #f3e5f5; }
+
+        .stat-info h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .stat-info p {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 18px;
+            color: #1a1a2e;
+        }
+
+        .last-updated {
+            font-size: 13px;
+            color: #888;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #eee;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-secondary {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .tablet-id {
+            font-family: 'Monaco', 'Consolas', monospace;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-container {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .error-container h3 {
+            color: #c53030;
+            margin-bottom: 12px;
+        }
+
+        .error-container p {
+            color: #742a2a;
+            margin-bottom: 16px;
+        }
+
+        .error-details {
+            background: #fff;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 13px;
+            color: #742a2a;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .cors-warning {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .cors-warning h3 {
+            color: #92400e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cors-warning p {
+            color: #78350f;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .cors-warning code {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #888;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-bar {
+                justify-content: center;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- CORS Warning Banner -->
+        <div class="cors-warning" id="corsWarning">
+            <h3>⚠️ CORS Configuration Required</h3>
+            <p>
+                This page makes API requests to <code>http://192.168.72.233:8680</code>. 
+                For this to work from GitHub Pages, the API server must include CORS headers:
+                <br><br>
+                <code>Access-Control-Allow-Origin: *</code> (or your GitHub Pages domain)<br>
+                <code>Access-Control-Allow-Methods: POST, GET, OPTIONS</code><br>
+                <code>Access-Control-Allow-Headers: Authorization, token, Content-Type</code>
+            </p>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>📦 Telica ESL Merchandise Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="refreshBtn" onclick="fetchData()">
+                    🔄 Refresh Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+                <div class="stat-icon blue">📦</div>
+                <div class="stat-info">
+                    <h3 id="totalCount">-</h3>
+                    <p>Total Products</p>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon green">✅</div>
+                <div class="stat-info">
+                    <h3 id="finishedCount">-</h3>
+                    <p>Tags Finished</p>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon orange">🏷️</div>
+                <div class="stat-info">
+                    <h3 id="totalTags">-</h3>
+                    <p>Total Tags</p>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon purple">📍</div>
+                <div class="stat-info">
+                    <h3 id="withLocation">-</h3>
+                    <p>With Location</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Merchandise List</h2>
+                <span class="last-updated" id="lastUpdated">Not yet loaded</span>
+            </div>
+            <div id="tableContent">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Click "Refresh Data" to load merchandise...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_CONFIG = {
+            url: 'http://192.168.72.233:8680/crebee/merchandise/query_list',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic Y2JlOmNiZQ==',
+                'token': '0437a2c7-46d9-41f8-8324-e332dab9789b'
+            },
+            body: JSON.stringify({})
+        };
+
+        // State
+        let merchandiseData = [];
+        let isLoading = false;
+
+        // Fetch data from API
+        async function fetchData() {
+            if (isLoading) return;
+
+            const refreshBtn = document.getElementById('refreshBtn');
+            const tableContent = document.getElementById('tableContent');
+
+            isLoading = true;
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '⏳ Loading...';
+
+            tableContent.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Fetching merchandise data...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(API_CONFIG.url, {
+                    method: API_CONFIG.method,
+                    headers: API_CONFIG.headers,
+                    body: API_CONFIG.body
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.result === 'success' && Array.isArray(data.data)) {
+                    merchandiseData = data.data;
+                    renderTable();
+                    updateStats();
+                    document.getElementById('lastUpdated').textContent = 
+                        `Last updated: ${new Date().toLocaleString('zh-TW')}`;
+                    
+                    // Hide CORS warning on success
+                    document.getElementById('corsWarning').style.display = 'none';
+                } else {
+                    throw new Error('Invalid response format');
+                }
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+                renderError(error);
+            } finally {
+                isLoading = false;
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '🔄 Refresh Data';
+            }
+        }
+
+        // Render the data table
+        function renderTable() {
+            const tableContent = document.getElementById('tableContent');
+
+            if (merchandiseData.length === 0) {
+                tableContent.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                        <h3>No merchandise found</h3>
+                        <p>The API returned an empty list.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tablet ID</th>
+                            <th>Name</th>
+                            <th>Tag Count</th>
+                            <th>Tag Status</th>
+                            <th>Location</th>
+                            <th>Date Info</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${merchandiseData.map(item => `
+                            <tr>
+                                <td><span class="tablet-id">${escapeHtml(item.tablet_id || '-')}</span></td>
+                                <td><strong>${escapeHtml(item.name || '-')}</strong></td>
+                                <td>${item.mer_tag_count || 0}</td>
+                                <td>${getStatusBadge(item.tag_image_state)}</td>
+                                <td>${escapeHtml(item.location_info || '-')}${item.location_info2 ? ` (${escapeHtml(item.location_info2)})` : ''}</td>
+                                <td>${escapeHtml(item.date_info || '-')}</td>
+                                <td>${formatDate(item.t_new)}</td>
+                                <td>${formatDate(item.t_update)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            tableContent.innerHTML = tableHTML;
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalCount').textContent = merchandiseData.length;
+            
+            const finishedCount = merchandiseData.filter(
+                item => item.tag_image_state === 'finished'
+            ).length;
+            document.getElementById('finishedCount').textContent = finishedCount;
+
+            const totalTags = merchandiseData.reduce(
+                (sum, item) => sum + (item.mer_tag_count || 0), 0
+            );
+            document.getElementById('totalTags').textContent = totalTags;
+
+            const withLocation = merchandiseData.filter(
+                item => item.location_info && item.location_info.trim() !== ''
+            ).length;
+            document.getElementById('withLocation').textContent = withLocation;
+        }
+
+        // Render error state
+        function renderError(error) {
+            const tableContent = document.getElementById('tableContent');
+            
+            let errorMessage = error.message;
+            let helpText = '';
+
+            // Check for CORS-related errors
+            if (error.message.includes('Failed to fetch') || 
+                error.message.includes('NetworkError') ||
+                error.message.includes('CORS')) {
+                helpText = `
+                    <p><strong>This is likely a CORS issue.</strong></p>
+                    <p>The API server at <code>http://192.168.72.233:8680</code> needs to include these headers:</p>
+                    <ul style="text-align: left; margin: 12px 0;">
+                        <li><code>Access-Control-Allow-Origin: *</code></li>
+                        <li><code>Access-Control-Allow-Methods: POST, GET, OPTIONS</code></li>
+                        <li><code>Access-Control-Allow-Headers: Authorization, token, Content-Type</code></li>
+                    </ul>
+                `;
+            }
+
+            tableContent.innerHTML = `
+                <div class="error-container">
+                    <h3>❌ Failed to Load Data</h3>
+                    <p>${escapeHtml(errorMessage)}</p>
+                    ${helpText}
+                    <div class="error-details">
+                        URL: ${API_CONFIG.url}<br>
+                        Method: ${API_CONFIG.method}<br>
+                        Error: ${escapeHtml(error.toString())}
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" onclick="fetchData()">🔄 Try Again</button>
+                </div>
+            `;
+
+            // Show CORS warning
+            document.getElementById('corsWarning').style.display = 'block';
+        }
+
+        // Helper: Get status badge HTML
+        function getStatusBadge(status) {
+            if (!status || status === '') {
+                return '<span class="badge badge-secondary">No Status</span>';
+            }
+            
+            const statusMap = {
+                'finished': { class: 'badge-success', text: 'Finished' },
+                'pending': { class: 'badge-warning', text: 'Pending' },
+                'processing': { class: 'badge-info', text: 'Processing' }
+            };
+
+            const config = statusMap[status.toLowerCase()] || { 
+                class: 'badge-secondary', 
+                text: status 
+            };
+
+            return `<span class="badge ${config.class}">${escapeHtml(config.text)}</span>`;
+        }
+
+        // Helper: Format date string
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            // Format: 2026-01-15_13:35:36 -> 2026/01/15 13:35
+            return dateStr.replace('_', ' ').substring(0, 16).replace(/-/g, '/');
+        }
+
+        // Helper: Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        // Auto-load on page load (optional - uncomment to enable)
+        // document.addEventListener('DOMContentLoaded', fetchData);
+    </script>
+</body>
+</html>
